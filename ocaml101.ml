@@ -239,8 +239,14 @@ let result = apply (fun x -> x * 3) 5   (* 15 *)
  
 let doubled  = List.map (fun x -> x * 2) [1;2;3]       (* [2;4;6] *)
 let evens    = List.filter (fun x -> x mod 2 = 0) [1;2;3;4];;  (* [2;4] *)
- 
- 
+
+(* HOF and `dependency injection` share the same core idea:
+   instead of hardcoding behavior, you receive it from outside.
+   In OOP, a class accepts a dependency (object/interface) via its constructor.
+   In functional programming, a function accepts behavior (another function) as an argument.
+   In both cases the principle is the same: do not fix the behavior, parameterize it.
+   The difference is only the medium: objects vs functions. *)
+   
 (* ===== 16. PRINTING ===== *)
  
 (* Basic print functions: *)
