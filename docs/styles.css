@@ -484,6 +484,23 @@ pre {
 .sol-body { display: none; margin-top: 28px; }
 .sol-body.open { display: block; }
 
+/* ── Playground link on exercise pages ── */
+.pg-link-wrap { margin-top: 28px; }
+.pg-link-btn {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  background: var(--accent-bg);
+  border: 1px solid #f0c9a8;
+  border-radius: 4px;
+  padding: 7px 16px;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.pg-link-btn:hover { background: #fde8d6; color: var(--accent); }
+
 /* ── Page nav footer ── */
 .page-footer {
   display: flex;
