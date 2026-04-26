@@ -1,0 +1,136 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 1 of 6</div>
+        <h1 class="page-title">Currying</h1>
+        <p class="page-intro">Every function in OCaml takes exactly one argument. Multi-parameter syntax is shorthand for a chain of single-argument functions, and this has practical consequences.</p>
+      </div>
+
+      <h2>What is currying?</h2>
+      <p>When you write <code>let add x y = x + y</code>, OCaml sees it as <code>fun x -> fun y -> x + y</code>. The multi-argument syntax is sugar. This style of representing multi-argument functions as nested single-argument functions is called <em>currying</em>, after mathematician Haskell Curry.</p>
+      <p>The practical consequence: you can call a function with fewer arguments than it expects, and you'll get back a new function waiting for the rest.</p>
+
+      <div class="two-col lean">
+        <div>
+          <div class="callout callout-key">
+            <div class="callout-title">Key insight</div>
+            <p>A curried function of <em>n</em> arguments is a chain of <em>n</em> single-argument functions, each closing over the previous argument.</p>
+          </div>
+          <p>The type signature makes this visible. <code>add</code> has type <code>int -> int -> int</code>, which associates right: <code>int -> (int -> int)</code>. It takes an <code>int</code> and returns a function from <code>int</code> to <code>int</code>.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">add.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="cmt">(* These two definitions are identical *)</span>
+<span class="kw">let</span> <span class="fn">add</span> x y = x + y
+<span class="kw">let</span> <span class="fn">add</span> = <span class="kw">fun</span> x -> <span class="kw">fun</span> y -> x + y
+
+<span class="cmt">(* Type: int -> int -> int
+         i.e. int -> (int -> int) *)</span>
+
+<span class="kw">let</span> result   = <span class="fn">add</span> <span class="num">3</span> <span class="num">4</span>     <span class="cmt">(* 7 *)</span>
+<span class="kw">let</span> <span class="fn">add_five</span> = <span class="fn">add</span> <span class="num">5</span>       <span class="cmt">(* int -> int *)</span>
+<span class="kw">let</span> result   = <span class="fn">add_five</span> <span class="num">10</span>  <span class="cmt">(* 15 *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Partial application</h2>
+      <p>Supplying fewer arguments than a function expects returns a new, more specific function. This is <em>partial application</em>, and it is the main reason currying is useful in practice.</p>
+      <p>In most languages, creating a specialized version of a function requires a wrapper or a factory. In OCaml, you just call the function with some of its arguments.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>Here, <code>multiply_by</code> is a general multiplier. Partially applying it with <code>2</code> gives us <code>double</code>, a real named function we can reuse anywhere. We can then pass it directly to <code>List.map</code> without any wrapping.</p>
+          <div class="callout callout-tip">
+            <div class="callout-title">Good practice</div>
+            <p>When writing higher-order functions, design the argument order so the most-varied argument comes last. This makes partial application natural.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">partial.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">multiply_by</span> factor x = factor * x
+<span class="cmt">(* multiply_by : int -> int -> int *)</span>
+
+<span class="kw">let</span> <span class="fn">double</span>    = <span class="fn">multiply_by</span> <span class="num">2</span>
+<span class="kw">let</span> <span class="fn">times_ten</span> = <span class="fn">multiply_by</span> <span class="num">10</span>
+
+<span class="fn">double</span> <span class="num">7</span>      <span class="cmt">(* 14 *)</span>
+<span class="fn">times_ten</span> <span class="num">3</span>  <span class="cmt">(* 30 *)</span>
+
+<span class="cmt">(* No wrapper needed, pass directly *)</span>
+<span class="ty">List</span>.<span class="fn">map</span> <span class="fn">double</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>; <span class="num">4</span>; <span class="num">5</span>]
+<span class="cmt">(* [2; 4; 6; 8; 10] *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Labeled arguments</h2>
+      <p>OCaml supports labeled arguments with <code>~label:</code> syntax. Labels make the argument order explicit at the call site, and allow arguments to be supplied in any order, which changes how partial application works.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>With labels, you can fix any argument regardless of position. Here we fix <code>~sep</code> first to create specialized join functions, but we could equally fix the list argument and vary the separator.</p>
+          <div class="callout callout-warn">
+            <div class="callout-title">Watch out</div>
+            <p>Labeled partial application is order-independent only if the remaining arguments have distinct labels (or the last argument is unlabeled). Mixing labeled and unlabeled can surprise you.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">labeled.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">join</span> ~<span class="fn">sep</span> words =
+  <span class="ty">String</span>.<span class="fn">concat</span> sep words
+
+<span class="cmt">(* Fix sep, vary the list *)</span>
+<span class="kw">let</span> <span class="fn">csv</span>      = <span class="fn">join</span> ~sep:<span class="str">","</span>
+<span class="kw">let</span> <span class="fn">sentence</span> = <span class="fn">join</span> ~sep:<span class="str">" "</span>
+
+<span class="fn">csv</span>      [<span class="str">"alice"</span>; <span class="str">"bob"</span>; <span class="str">"carol"</span>]
+<span class="cmt">(* "alice,bob,carol" *)</span>
+
+<span class="fn">sentence</span> [<span class="str">"the"</span>; <span class="str">"quick"</span>; <span class="str">"fox"</span>]
+<span class="cmt">(* "the quick fox" *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>The pipe operator and composition</h2>
+      <p>Currying works naturally with the <code>|&gt;</code> pipe operator. The pipe passes a value left-to-right through a sequence of functions, most of which are partially applied. The result reads like a data pipeline: each step is one transformation.</p>
+      <p>You can also define a compose operator <code>%</code> for when you want to build a reusable pipeline without an initial value.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">compose.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="cmt">(* Right-to-left compose *)</span>
+<span class="kw">let</span> (<span class="fn">%</span>) f g x = f (g x)
+
+<span class="kw">let</span> <span class="fn">trim_upper</span> =
+  <span class="ty">String</span>.<span class="fn">uppercase_ascii</span> % <span class="ty">String</span>.<span class="fn">trim</span>
+
+<span class="fn">trim_upper</span> <span class="str">"  hello  "</span>   <span class="cmt">(* "HELLO" *)</span>
+
+<span class="cmt">(* Left-to-right with |> *)</span>
+<span class="str">"  hello world  "</span>
+|> <span class="ty">String</span>.<span class="fn">trim</span>
+|> <span class="ty">String</span>.<span class="fn">uppercase_ascii</span>
+|> <span class="ty">String</span>.<span class="fn">split_on_char</span> <span class="str">' '</span>
+<span class="cmt">(* ["HELLO"; "WORLD"] *)</span></pre>
+      </div>
+
+      <div class="page-footer">
+        <a href="/">← Home</a>
+        <a href="/concepts/abstractions">Next: Abstractions →</a>
+      </div>
+    </div>

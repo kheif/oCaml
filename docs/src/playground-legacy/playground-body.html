@@ -1,0 +1,109 @@
+<div class="pg-bar" id="pg-bar">
+  <span class="pg-ex-badge" id="pg-ex-badge" style="display:none;"></span>
+  <button class="pg-icon-btn" onclick="downloadCode()" title="Download .ml">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  </button>
+  <input type="file" id="ml-upload" accept=".ml,.txt" style="display:none">
+  <button class="pg-icon-btn" onclick="document.getElementById('ml-upload').click()" title="Upload .ml">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+  </button>
+  <button class="pg-icon-btn" onclick="openSettings()" title="Settings">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+  </button>
+  <button class="run-btn" id="run-btn" onclick="runCode()" style="margin-left:auto;">Run</button>
+</div>
+
+<div class="pg-body" id="pg-body">
+  <div class="pg-left-panel">
+    <div class="pg-tab-bar" id="pg-tab-bar"></div>
+    <span id="editor-label" style="display:none">scratch.ml</span>
+    <div class="pg-editor-panel">
+      <textarea class="pg-editor" id="pg-editor" spellcheck="false">(* Write your OCaml here *)
+
+let () =
+  Printf.printf "Hello, OCaml!\n"
+</textarea>
+    </div>
+    <div class="pg-info-panel" id="pg-info-panel">
+      <div class="pg-info-header" onclick="toggleInfoPanel()">
+        <span>Types &amp; Signatures</span>
+        <span class="pg-info-arrow">&#9660;</span>
+      </div>
+      <pre class="pg-info-content" id="pg-info-content"><span class="pg-info-empty">Run your code to see types.</span></pre>
+    </div>
+  </div>
+
+  <div class="pg-right-panel">
+    <div class="pg-tasks-panel">
+      <div class="pg-tasks-header">Tasks</div>
+      <div id="pg-tasks"></div>
+    </div>
+    <div class="pg-log-panel">
+      <div class="pg-log-header">Output</div>
+      <pre class="pg-log" id="pg-log"><span class="pg-log-empty">Run your code to see output.</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="pg-settings-overlay" id="pg-settings-overlay" onclick="closeSettingsOverlay(event)">
+  <div class="pg-settings-panel">
+    <div class="pg-settings-header">
+      <span>Settings</span>
+      <button class="pg-settings-close" onclick="closeSettings()">×</button>
+    </div>
+    <div class="pg-settings-body">
+      <div class="pg-setting-row">
+        <span class="pg-setting-label">Dark mode</span>
+        <button class="pg-toggle" id="settings-theme-btn" onclick="toggleTheme()">Off</button>
+      </div>
+      <div class="pg-setting-row">
+        <span class="pg-setting-label">Autocomplete</span>
+        <button class="pg-toggle pg-toggle-on" id="settings-autocomplete-btn" onclick="toggleAutocomplete()">On</button>
+      </div>
+      <div class="pg-settings-divider"></div>
+      <div class="pg-setting-row">
+        <span class="pg-setting-label">Editor zoom</span>
+        <div class="pg-zoom-btns">
+          <button class="pg-zoom-btn" onclick="editorZoom(-1)">−</button>
+          <span class="pg-zoom-val" id="editor-zoom-val">13px</span>
+          <button class="pg-zoom-btn" onclick="editorZoom(+1)">+</button>
+        </div>
+      </div>
+      <div class="pg-setting-row">
+        <span class="pg-setting-label">Output zoom</span>
+        <div class="pg-zoom-btns">
+          <button class="pg-zoom-btn" onclick="consoleZoom(-1)">−</button>
+          <span class="pg-zoom-val" id="console-zoom-val">13px</span>
+          <button class="pg-zoom-btn" onclick="consoleZoom(+1)">+</button>
+        </div>
+      </div>
+      <div class="pg-settings-divider"></div>
+      <div class="pg-settings-section-title">Keyboard Shortcuts</div>
+      <div class="pg-shortcut-row"><span>Run code</span><kbd>Ctrl+Enter</kbd></div>
+      <div class="pg-shortcut-row"><span>Prettify</span><kbd>Shift+Alt+F</kbd></div>
+      <div class="pg-shortcut-row"><span>Toggle comment</span><kbd>Ctrl+/</kbd></div>
+      <div class="pg-shortcut-row"><span>Duplicate line</span><kbd>Alt+Shift+D</kbd></div>
+      <div class="pg-shortcut-row"><span>Move line up</span><kbd>Alt+↑</kbd></div>
+      <div class="pg-shortcut-row"><span>Move line down</span><kbd>Alt+↓</kbd></div>
+      <div class="pg-shortcut-row"><span>Autocomplete</span><kbd>Ctrl+Space</kbd></div>
+      <div class="pg-shortcut-row"><span>Find</span><kbd>Ctrl+F</kbd></div>
+      <div class="pg-shortcut-row"><span>Replace</span><kbd>Ctrl+H</kbd></div>
+      <div class="pg-settings-divider"></div>
+      <button class="pg-reset-btn" onclick="resetOCaml()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.5"/></svg>
+        Reset OCaml Interpreter
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden elements required by the OCaml runtime -->
+<div id="toplevel-container" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;">
+  <pre id="output"></pre>
+  <div>
+    <div id="sharp" class="sharp"></div>
+    <textarea id="userinput" autocorrect="off" autocapitalize="none">Loading ...</textarea>
+  </div>
+</div>
+<canvas id="test-canvas" style="position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;display:block;"></canvas>
