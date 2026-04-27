@@ -30,7 +30,7 @@ export default function ContentPage({ html, title, description }: Props) {
       if (/^[a-z]+:/i.test(href) || href.startsWith('//') || href.startsWith('#')) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
       e.preventDefault();
-      // Playground is a separate JS app with module-scope globals — never SPA-nav to it.
+      // Playground is a separate JS app with module-scope globals, so never SPA-nav to it.
       if (href.startsWith('/playground')) {
         window.location.assign(href);
         return;

@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { topbarLinks } from './nav-data';
 
-// Playground is a separate, script-tag-driven app — link to/from it always
+// Playground is a separate, script-tag-driven app; linking to or from it always
 // triggers a full page load so its module-scope globals never collide.
 function NavLink({
   to,

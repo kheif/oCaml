@@ -1,0 +1,53 @@
+.mini-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.mini-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.1s, background 0.1s, transform 0.1s;
+}
+.mini-card:hover {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.mini-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mini-card-concept {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mini-card-title {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.mini-card-prompt {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.55;
+}

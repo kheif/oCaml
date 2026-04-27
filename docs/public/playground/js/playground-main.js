@@ -1,4 +1,4 @@
-// ── Intellisense — from BetterOCaml editor_change.js ─
+// ── Intellisense from BetterOCaml editor_change.js ─
 const COMMENT_REGEX   = /[(][*][\s\S]*?[*][)][\s]*/g;
 const VARIABLE_1_REGEX = /((let rec \w+)|(let \w+)|(and \w+))/g;
 const VARIABLE_2_REGEX = /(let )|(rec )|(and )/g;
@@ -255,7 +255,7 @@ function makeHintItem(text, mod) {
   return { text, render: renderHintItem, typeStr };
 }
 
-// Cached local variable names — rebuilt on every editor change, not on every keystroke
+// Cached local variable names, rebuilt on every editor change, not on every keystroke
 let _localVars = [];
 function rebuildLocalVars() {
   if (!_editor) return;
@@ -1137,7 +1137,7 @@ function backgroundTypeCheck() {
   outputEl.innerHTML = '';
   const ok = safeExec(getEditorValue());
   if (!ok) return;
-  // setTimeout(0) — let the OCaml toplevel flush its DOM writes first
+  // setTimeout(0) lets the OCaml toplevel flush its DOM writes first
   setTimeout(() => {
     const out = getRuntimeOutputText();
     outputEl.innerHTML = '';
@@ -1354,7 +1354,7 @@ function runCode() {
       // Exercise mode: run tests
       const ex = EXERCISES[_currentEx];
       if (!ok1 || /error:/i.test(compileOut)) {
-        renderOutput(logEl, compileOut.trim() || 'Runtime error — try reloading the page.');
+        renderOutput(logEl, compileOut.trim() || 'Runtime error. Try reloading the page.');
         highlightErrors(compileOut);
         renderTasks(ex.tests.map(t => ({ ...t, state: 'fail', got: 'compile error' })));
         return;
@@ -1364,7 +1364,7 @@ function runCode() {
       const ok2 = safeExec(ex.testCode);
       const raw = getRuntimeOutputText().trim();
       if (!ok2 && !raw) {
-        renderOutput(logEl, 'Test runner crashed — try reloading the page.');
+        renderOutput(logEl, 'Test runner crashed. Try reloading the page.');
         renderTasks(ex.tests.map(t => ({ ...t, state: 'fail', got: 'runtime error' })));
         return;
       }

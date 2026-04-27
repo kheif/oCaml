@@ -28,7 +28,7 @@ let power (x : int) (n : int) = iter (fun a -> a * x) n 1
 (* Indefinite Iteration
 
    Keep applying increments to a starting value until a predicate holds.
-   The number of steps is not known in advance — it depends on the data. *)
+   The number of steps is not known in advance; it depends on the data. *)
 
 let rec first (pred : int -> bool) (start : int) : int =
   if pred start then start else first pred (start + 1)

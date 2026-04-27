@@ -41,6 +41,7 @@ export const navGroups: NavGroup[] = [
       { num: 'E1.', label: 'Bank Account', path: '/exercises/bank' },
       { num: 'E2.', label: 'Playlist', path: '/exercises/playlist' },
       { num: 'E3.', label: 'Search', path: '/exercises/search' },
+      { num: '·', label: 'Mini Exercises', path: '/exercises/mini' },
     ],
   },
 ];

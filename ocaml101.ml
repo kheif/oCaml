@@ -5,7 +5,7 @@
  
 (* ===== 1. BINDINGS ===== *)
  
-(* Variables are immutable bindings — not boxes, but labels.
+(* Variables are immutable bindings, not boxes, just labels.
    Once bound, the value never changes. *)
 let x = 42
 let name = "Mehmet"
@@ -62,7 +62,7 @@ let is_notequal = 3 <> 4   (* true *)
  
 (* ===== 5. IF / ELSE ===== *)
  
-(* if is an EXPRESSION, not a statement — it always returns a value.
+(* if is an EXPRESSION, not a statement; it always returns a value.
    else is mandatory. Both branches must return the same type. *)
 let abs_val x = if x >= 0 then x else -x
  
@@ -81,11 +81,11 @@ let square (x : int) : int = x * x
 (* Functions are values too. Their type is written as: input -> output *)
 (* val square : int -> int = <fun> *)
  
-(* Multiple arguments — each separated by space, not comma: *)
+(* Multiple arguments are separated by space, not comma: *)
 let add x y = x + y
 (* val add : int -> int -> int = <fun> *)
  
-(* Calling a function — no parentheses needed unless grouping: *)
+(* Calling a function: no parentheses needed unless grouping: *)
 let result = square 5
 let result = add 3 4
 let result = add (square 3) 4   (* parentheses for grouping *)
@@ -143,18 +143,18 @@ let greet ((name : string), (age : int)) =
  
 (* ===== 11. LISTS ===== *)
  
-(* Ordered collection of values — all elements must be the same type.
+(* Ordered collection of values where all elements must be the same type.
    Elements separated by semicolons. *)
 let nums  = [1; 2; 3; 4; 5]
 let names = ["Alice"; "Bob"; "Charlie"]
  
-(* :: is the "cons" operator — prepend an element to a list *)
+(* :: is the "cons" operator, used to prepend an element to a list *)
 let more = 0 :: nums    (* [0; 1; 2; 3; 4; 5] *)
  
 (* Lists are made of head (first element) and tail (rest of list):
    [1; 2; 3]  =  1 :: 2 :: 3 :: []   *)
  
-(* Accessing elements — NO index access like list[0].
+(* Accessing elements: NO index access like list[0].
    Use pattern matching instead: *)
 let rec sum_list = function
   | []           -> 0
@@ -173,7 +173,7 @@ let describe n =
   match n with
   | 0 -> "zero"
   | 1 -> "one"
-  | _ -> "many"    (* _ is wildcard — matches anything *)
+  | _ -> "many"    (* _ is the wildcard and matches anything *)
  
 (* Shorthand: 'function' = match on the implicit last argument *)
 let describe = function
@@ -191,18 +191,18 @@ type shape =
   | Rectangle of float * float
   | Triangle  of float * float
  
-(* Pattern match on variants — compiler enforces exhaustiveness: *)
+(* Pattern match on variants; the compiler enforces exhaustiveness: *)
 let area = function
   | Circle r        -> 3.14 *. r *. r
   | Rectangle (w, h) -> w *. h
   | Triangle (b, h)  -> 0.5 *. b *. h
  
-(* Adding a new variant? Every match must handle it — compile error if not. *)
+(* Adding a new variant? Every match must handle it, otherwise you get a compile error. *)
  
  
 (* ===== 14. GENERIC TYPES (POLYMORPHISM) ===== *)
  
-(* 'a is a type parameter — like <T> in Kotlin/Java.
+(* 'a is a type parameter, like <T> in Kotlin/Java.
    The function works for any type. *)
  
 (* Example from standard library: *)

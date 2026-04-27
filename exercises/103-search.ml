@@ -6,11 +6,11 @@
 
 
 (* 2. double_n_times: using iter, double a number exactly n times *)
-(* Hint: partial application — fix the step function, leave n and start open *)
+(* Hint: partial application; fix the step function, leave n and start open *)
 
 
 (* 3. add_step: using iter, adds a fixed step value n times to a start
-   Hint: partial application again — count_by_3 should work as: count_by_3 5 0 = 15 *)
+   Hint: partial application again; count_by_3 should work as: count_by_3 5 0 = 15 *)
 
 
 (* ===== INDEFINITE ITERATION ===== *)

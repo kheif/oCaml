@@ -25,7 +25,7 @@
 
 
 (* 4. filter_by_artist: takes an artist name and a list, returns only that artist's tracks *)
-(* Hint: same pattern as filter_by_genre — notice how partial application makes these reusable *)
+(* Hint: same pattern as filter_by_genre, and notice how partial application makes these reusable *)
 
 
 (* 5. track_titles: takes a list of tracks, returns a string list of just the titles *)

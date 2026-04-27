@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ContentPage from './components/ContentPage';
 import Playground from './pages/Playground';
+import MiniExerciseIndex from './pages/MiniExerciseIndex';
+import MiniExercisePage from './pages/MiniExercisePage';
 import { contentRoutes } from './pages/routes';
 
 export default function App() {
@@ -10,7 +12,10 @@ export default function App() {
       <Routes>
         <Route path="/playground" element={<Playground />} />
         <Route path="/playground.html" element={<Navigate to="/playground" replace />} />
+        {/* Full-screen mini exercise (no sidebar) */}
+        <Route path="/exercises/mini/:id" element={<MiniExercisePage />} />
         <Route element={<Layout />}>
+          <Route path="/exercises/mini" element={<MiniExerciseIndex />} />
           {contentRoutes.map((r) => (
             <Route
               key={r.path}
