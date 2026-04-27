@@ -1,0 +1,112 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 1 of 10</div>
+        <h1 class="page-title">Bindings</h1>
+        <p class="page-intro">A binding associates a name with a value. In OCaml, <code>let</code> is the only way to introduce a name, and the resulting binding is immutable by default.</p>
+      </div>
+
+      <h2>The let keyword</h2>
+      <p>The form <code>let &lt;name&gt; = &lt;expr&gt;</code> evaluates the expression on the right and gives the result a name. The name does not refer to a memory cell: it refers directly to the value. There is no assignment, no reassignment, and no notion of a variable in the C sense.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>At the top level of a file or a REPL session, a <code>let</code> introduces a name into the surrounding environment. Subsequent code can use that name. The compiler also infers and prints the type, so you immediately see what kind of value you bound.</p>
+          <div class="callout callout-key">
+            <div class="callout-title">Key point</div>
+            <p>A binding is not a variable. It is a fixed link between a name and a value. To get a different value associated with the same name, you write a new <code>let</code>, which produces a new binding.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">basic.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="cmt">(* Bind a name to a value *)</span>
+<span class="kw">let</span> greeting = <span class="str">"hello"</span>
+<span class="cmt">(* greeting : string *)</span>
+
+<span class="kw">let</span> answer = <span class="num">42</span>
+<span class="cmt">(* answer : int *)</span>
+
+<span class="cmt">(* Function bindings work the same way *)</span>
+<span class="kw">let</span> <span class="fn">square</span> x = x * x
+<span class="cmt">(* square : int -> int *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>let ... in: local bindings</h2>
+      <p>Inside an expression, <code>let &lt;name&gt; = &lt;expr1&gt; in &lt;expr2&gt;</code> introduces a name that is in scope only within <code>expr2</code>. The whole form is itself an expression and evaluates to whatever <code>expr2</code> evaluates to.</p>
+      <p>This is how you give names to intermediate results inside a function body. Each <code>let ... in</code> nests inside the previous one, building up a small local environment.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>Local bindings are not visible outside their <code>in</code> clause. After the function returns, the names are gone. This is normal lexical scoping, but it is worth saying out loud because OCaml has no separate <code>var</code> or <code>const</code> form.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">local.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">hypotenuse</span> a b =
+  <span class="kw">let</span> a2 = a *. a <span class="kw">in</span>
+  <span class="kw">let</span> b2 = b *. b <span class="kw">in</span>
+  <span class="ty">Float</span>.<span class="fn">sqrt</span> (a2 +. b2)
+
+<span class="cmt">(* a2 and b2 are scoped to the body.
+   They do not exist outside hypotenuse. *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Shadowing</h2>
+      <p>Writing a second <code>let</code> with the same name does not mutate the original binding. It introduces a new binding that <em>shadows</em> the old one. Code written before the shadow still sees the original value; code after sees the new one.</p>
+      <p>This is how you express "update" in a language without assignment. The old value is unchanged; you just stop referring to it.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">shadow.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="kw">let</span> x = <span class="num">1</span>
+<span class="kw">let</span> <span class="fn">show_first</span> () = x  <span class="cmt">(* captures the original 1 *)</span>
+
+<span class="kw">let</span> x = <span class="num">2</span>           <span class="cmt">(* shadows: a new binding for x *)</span>
+
+<span class="fn">show_first</span> ()        <span class="cmt">(* still 1, not 2 *)</span>
+x                    <span class="cmt">(* 2 *)</span></pre>
+      </div>
+
+      <h2>Mutability is opt-in</h2>
+      <p>If you genuinely need a value that changes over time, OCaml gives you <code>ref</code>. A <code>ref</code> is a small mutable cell. The binding to the cell is still immutable, but the cell's contents can be updated with <code>:=</code> and read with <code>!</code>.</p>
+      <p>In practice, idiomatic OCaml leans on immutable bindings and recursion or higher-order functions for what other languages do with loops and reassignment. Reach for <code>ref</code> only when you truly need state.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">refs.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="kw">let</span> counter = <span class="kw">ref</span> <span class="num">0</span>
+<span class="cmt">(* counter : int ref *)</span>
+
+counter := !counter + <span class="num">1</span>
+counter := !counter + <span class="num">1</span>
+
+!counter             <span class="cmt">(* 2 *)</span>
+
+<span class="cmt">(* The binding `counter` still points to the same cell.
+   What changed is the cell's contents, not the binding. *)</span></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Good practice</div>
+        <p>Default to plain <code>let</code> bindings. They are easier to reason about, friendlier to the type checker, and avoid the class of bugs that come with shared mutable state.</p>
+      </div>
+
+      <div class="page-footer">
+        <a href="/">← Home</a>
+        <a href="/concepts/currying">Next: Currying →</a>
+      </div>
+    </div>

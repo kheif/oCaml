@@ -1,0 +1,113 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 4 of 10</div>
+        <h1 class="page-title">Type Inference</h1>
+        <p class="page-intro">OCaml is statically typed but you rarely write type annotations. The compiler figures out the most general type that makes your program well-typed and uses that.</p>
+      </div>
+
+      <h2>Types without annotations</h2>
+      <p>When you define a binding, OCaml inspects how the value is used and assigns it a type. The algorithm that drives this is Hindley-Milner inference: every expression collects constraints from the operators and functions applied to it, and the compiler solves them.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>The expression <code>x + 1</code> tells the compiler that <code>x</code> must be an <code>int</code>, because <code>+</code> on integers has type <code>int -&gt; int -&gt; int</code>. From there the type of the whole function follows.</p>
+          <div class="callout callout-key">
+            <div class="callout-title">Key point</div>
+            <p>Inference is not guessing. The compiler computes the unique most general type that is consistent with every use of every name. If no such type exists, you get a type error instead of a silent runtime failure.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">infer.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">incr</span> x = x + <span class="num">1</span>
+<span class="cmt">(* incr : int -> int *)</span>
+
+<span class="kw">let</span> <span class="fn">greet</span> name = <span class="str">"hi, "</span> ^ name
+<span class="cmt">(* greet : string -> string *)</span>
+
+<span class="kw">let</span> <span class="fn">avg</span> a b = (a +. b) /. <span class="num">2.0</span>
+<span class="cmt">(* avg : float -> float -> float *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>How constraints propagate</h2>
+      <p>Each operator and function used in an expression contributes a constraint. <code>+</code> forces its arguments to be <code>int</code>. <code>+.</code> forces them to be <code>float</code>. <code>^</code> forces strings. The result type of one call becomes the input type of the next.</p>
+      <p>This is why even small changes to a function body can change its inferred type. Swapping <code>+</code> for <code>+.</code> moves the whole signature from integers to floats without you touching any annotations.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>OCaml does not silently coerce between numeric types. The arithmetic operator you choose determines the type, and the type of every variable in scope follows from there.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">propagate.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">double_int</span> x = x + x
+<span class="cmt">(* double_int : int -> int *)</span>
+
+<span class="kw">let</span> <span class="fn">double_float</span> x = x +. x
+<span class="cmt">(* double_float : float -> float *)</span>
+
+<span class="cmt">(* The body picks the type. Here, comparing
+   to a string forces the input to be a string. *)</span>
+<span class="kw">let</span> <span class="fn">is_yes</span> s = s = <span class="str">"yes"</span>
+<span class="cmt">(* is_yes : string -> bool *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Type variables when nothing constrains</h2>
+      <p>If a function body uses an argument in a way that does not pin down its type, OCaml leaves the type open. It introduces a <em>type variable</em>, written <code>'a</code>, <code>'b</code>, and so on, to stand for "any type, chosen later".</p>
+      <p>This is the foundation of polymorphism, covered next. For now, the takeaway is that the compiler does not invent a concrete type when it does not need one. It keeps the binding as general as the program allows.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">generic.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="kw">let</span> <span class="fn">identity</span> x = x
+<span class="cmt">(* identity : 'a -> 'a *)</span>
+
+<span class="kw">let</span> <span class="fn">first</span> (a, _) = a
+<span class="cmt">(* first : 'a * 'b -> 'a *)</span>
+
+<span class="kw">let</span> <span class="fn">const</span> x _ = x
+<span class="cmt">(* const : 'a -> 'b -> 'a *)</span></pre>
+      </div>
+
+      <h2>Annotations as a tool, not a requirement</h2>
+      <p>You can write a type annotation anywhere, but you usually do not need to. Annotations are useful when you want to document intent at a module boundary, narrow an inferred type that came out more general than you wanted, or get a clearer error message in a tricky function.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">annotate.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="cmt">(* On the binding *)</span>
+<span class="kw">let</span> <span class="fn">incr</span> : int -> int = <span class="kw">fun</span> x -> x + <span class="num">1</span>
+
+<span class="cmt">(* On a parameter *)</span>
+<span class="kw">let</span> <span class="fn">incr</span> (x : int) = x + <span class="num">1</span>
+
+<span class="cmt">(* On the result *)</span>
+<span class="kw">let</span> <span class="fn">incr</span> x : int = x + <span class="num">1</span>
+
+<span class="cmt">(* All three produce the same type: int -> int *)</span></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Good practice</div>
+        <p>Let the compiler infer types in the small. Add annotations at module signatures and on tricky helpers. The combination keeps everyday code clean while preserving a clear contract at the boundaries.</p>
+      </div>
+
+      <div class="page-footer">
+        <a href="/concepts/abstractions">← Abstractions</a>
+        <a href="/concepts/polymorphism">Next: Polymorphism →</a>
+      </div>
+    </div>

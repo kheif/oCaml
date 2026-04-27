@@ -20,12 +20,16 @@ export const navGroups: NavGroup[] = [
   {
     label: 'Concepts',
     links: [
-      { num: '1.', label: 'Currying', path: '/concepts/currying' },
-      { num: '2.', label: 'Abstractions', path: '/concepts/abstractions' },
-      { num: '3.', label: 'Pattern Matching', path: '/concepts/pattern-matching' },
-      { num: '4.', label: 'Higher-Order Functions', path: '/concepts/higher-order' },
-      { num: '5.', label: 'Tail Recursion', path: '/concepts/tail-recursion' },
-      { num: '6.', label: 'Iteration', path: '/concepts/iteration' },
+      { num: '1.', label: 'Bindings', path: '/concepts/bindings' },
+      { num: '2.', label: 'Currying', path: '/concepts/currying' },
+      { num: '3.', label: 'Abstractions', path: '/concepts/abstractions' },
+      { num: '4.', label: 'Type Inference', path: '/concepts/type-inference' },
+      { num: '5.', label: 'Polymorphism', path: '/concepts/polymorphism' },
+      { num: '6.', label: 'Pattern Matching', path: '/concepts/pattern-matching' },
+      { num: '7.', label: 'Lists', path: '/concepts/lists' },
+      { num: '8.', label: 'Higher-Order Functions', path: '/concepts/higher-order' },
+      { num: '9.', label: 'Tail Recursion', path: '/concepts/tail-recursion' },
+      { num: '10.', label: 'Iteration', path: '/concepts/iteration' },
     ],
   },
   {
@@ -41,6 +45,6 @@ export const navGroups: NavGroup[] = [
 export const topbarLinks: { label: string; path: string; matchPrefix?: string }[] = [
   { label: 'Home', path: '/' },
   { label: 'Cheat Sheet', path: '/cheatsheet' },
-  { label: 'Concepts', path: '/concepts/currying', matchPrefix: '/concepts/' },
+  { label: 'Concepts', path: '/concepts/bindings', matchPrefix: '/concepts/' },
   { label: 'Playground', path: '/playground' },
 ];

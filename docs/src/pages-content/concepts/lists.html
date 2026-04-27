@@ -1,0 +1,137 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 7 of 10</div>
+        <h1 class="page-title">Lists</h1>
+        <p class="page-intro">A list in OCaml is an immutable, singly-linked sequence of values of the same type. Most everyday data processing in OCaml passes through lists and the small set of functions that operate on them.</p>
+      </div>
+
+      <h2>Construction</h2>
+      <p>A list is either empty (<code>[]</code>) or a head element followed by a tail list (<code>head :: tail</code>). The <code>::</code> operator, called <em>cons</em>, prepends an element to an existing list. The literal syntax <code>[1; 2; 3]</code> is sugar for <code>1 :: 2 :: 3 :: []</code>.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>All elements of a list have the same type. The type is written <code>'a list</code>, where <code>'a</code> is the element type. A list of integers is <code>int list</code>, a list of strings is <code>string list</code>, and an empty list is polymorphic until used.</p>
+          <div class="callout callout-key">
+            <div class="callout-title">Key point</div>
+            <p>Lists are immutable. Cons does not modify the tail; it produces a new list that shares the tail with the old one. This sharing is what makes immutable lists cheap to build.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">build.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> empty = []
+<span class="cmt">(* empty : 'a list *)</span>
+
+<span class="kw">let</span> nums = [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* int list *)</span>
+
+<span class="cmt">(* The same list with cons *)</span>
+<span class="kw">let</span> nums' = <span class="num">1</span> :: <span class="num">2</span> :: <span class="num">3</span> :: []
+
+<span class="cmt">(* Prepend; original list is unchanged *)</span>
+<span class="kw">let</span> more = <span class="num">0</span> :: nums
+<span class="cmt">(* more = [0; 1; 2; 3]
+   nums  = [1; 2; 3] still *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Pattern matching on lists</h2>
+      <p>Pattern matching is the natural way to take a list apart. The two cases mirror the two ways a list can be built: empty or cons. Most list-processing functions follow the same shape: handle the empty case, then handle the cons case recursively.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>The empty pattern <code>[]</code> matches the empty list. The cons pattern <code>x :: xs</code> matches any non-empty list, binding the first element to <code>x</code> and the rest to <code>xs</code>. Together they cover every possible list, and the compiler will warn if you miss either.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">recurse.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let rec</span> <span class="fn">length</span> = <span class="kw">function</span>
+  | [] -> <span class="num">0</span>
+  | _ :: xs -> <span class="num">1</span> + <span class="fn">length</span> xs
+
+<span class="kw">let rec</span> <span class="fn">sum</span> = <span class="kw">function</span>
+  | [] -> <span class="num">0</span>
+  | x :: xs -> x + <span class="fn">sum</span> xs
+
+<span class="fn">length</span> [<span class="num">10</span>; <span class="num">20</span>; <span class="num">30</span>]   <span class="cmt">(* 3 *)</span>
+<span class="fn">sum</span>    [<span class="num">10</span>; <span class="num">20</span>; <span class="num">30</span>]   <span class="cmt">(* 60 *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Basic functions on lists</h2>
+      <p>The standard library's <code>List</code> module covers the operations you reach for most often. A handful of these handle the bulk of everyday work.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">list_basics.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="ty">List</span>.<span class="fn">length</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* 3 *)</span>
+
+<span class="ty">List</span>.<span class="fn">rev</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* [3; 2; 1] *)</span>
+
+<span class="ty">List</span>.<span class="fn">append</span> [<span class="num">1</span>; <span class="num">2</span>] [<span class="num">3</span>; <span class="num">4</span>]
+<span class="cmt">(* [1; 2; 3; 4]. Also written [1; 2] @ [3; 4] *)</span>
+
+<span class="ty">List</span>.<span class="fn">hd</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* 1, raises on empty lists *)</span>
+
+<span class="ty">List</span>.<span class="fn">tl</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* [2; 3], raises on empty lists *)</span>
+
+<span class="ty">List</span>.<span class="fn">nth</span> [<span class="num">10</span>; <span class="num">20</span>; <span class="num">30</span>] <span class="num">1</span>
+<span class="cmt">(* 20, zero-indexed *)</span></pre>
+      </div>
+
+      <h2>Map, filter, and fold</h2>
+      <p>Three higher-order functions cover most list transformations. <code>List.map</code> applies a function to every element. <code>List.filter</code> keeps the elements that satisfy a predicate. <code>List.fold_left</code> reduces a list to a single value by accumulating from left to right.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>Together with the pipe operator, these compose into readable pipelines. Each step is one transformation, and the type of the value flowing through changes only when you map to a new element type.</p>
+          <div class="callout callout-warn">
+            <div class="callout-title">Watch out</div>
+            <p><code>List.hd</code>, <code>List.tl</code>, and <code>List.nth</code> raise exceptions on inputs that do not fit. For total alternatives, use the <code>_opt</code> variants where they exist, or pattern match yourself.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">pipeline.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre>[<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>; <span class="num">4</span>; <span class="num">5</span>]
+|> <span class="ty">List</span>.<span class="fn">filter</span> (<span class="kw">fun</span> x -> x <span class="kw">mod</span> <span class="num">2</span> = <span class="num">0</span>)
+|> <span class="ty">List</span>.<span class="fn">map</span> (<span class="kw">fun</span> x -> x * x)
+|> <span class="ty">List</span>.<span class="fn">fold_left</span> (+) <span class="num">0</span>
+<span class="cmt">(* 4 + 16 = 20 *)</span>
+
+<span class="ty">List</span>.<span class="fn">map</span> <span class="ty">String</span>.<span class="fn">length</span> [<span class="str">"hi"</span>; <span class="str">"there"</span>]
+<span class="cmt">(* [2; 5] *)</span>
+
+<span class="ty">List</span>.<span class="fn">filter</span> ((&lt;) <span class="num">0</span>) [-<span class="num">1</span>; <span class="num">2</span>; -<span class="num">3</span>; <span class="num">4</span>]
+<span class="cmt">(* [2; 4] *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Good practice</div>
+        <p>Reach for <code>map</code>, <code>filter</code>, and <code>fold_left</code> before writing an explicit recursion. They express intent more directly and are tail-recursive where it matters.</p>
+      </div>
+
+      <div class="page-footer">
+        <a href="/concepts/pattern-matching">← Pattern Matching</a>
+        <a href="/concepts/higher-order">Next: Higher-Order Functions →</a>
+      </div>
+    </div>

@@ -1,0 +1,116 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 5 of 10</div>
+        <h1 class="page-title">Polymorphism</h1>
+        <p class="page-intro">When a function does not depend on the concrete type of an argument, OCaml gives it a polymorphic type. The same function then works for any type that fits the shape of its signature.</p>
+      </div>
+
+      <h2>Type variables</h2>
+      <p>A type written with a leading apostrophe, like <code>'a</code>, is a <em>type variable</em>. It stands for "some type, the same one wherever this variable appears". When a function's inferred type contains type variables, the function is polymorphic.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>The identity function uses its argument only by returning it. Nothing in the body pins the type, so the compiler infers <code>'a -&gt; 'a</code>: any type goes in, the same type comes out. The two occurrences of <code>'a</code> are linked.</p>
+          <div class="callout callout-key">
+            <div class="callout-title">Key point</div>
+            <p>Type variables are not wildcards. <code>'a -&gt; 'a</code> means input and output have the same type. <code>'a -&gt; 'b</code> means they may differ.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">poly.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="kw">let</span> <span class="fn">identity</span> x = x
+<span class="cmt">(* identity : 'a -> 'a *)</span>
+
+<span class="fn">identity</span> <span class="num">42</span>          <span class="cmt">(* 42, used as int *)</span>
+<span class="fn">identity</span> <span class="str">"hi"</span>        <span class="cmt">(* "hi", used as string *)</span>
+<span class="fn">identity</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]   <span class="cmt">(* int list *)</span>
+
+<span class="cmt">(* Each use picks a concrete type
+   for 'a at that call site. *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Parametric polymorphism</h2>
+      <p>OCaml's polymorphism is <em>parametric</em>: a polymorphic function behaves the same way for every type it could be called with. It cannot inspect the type at runtime and branch on it. This makes the type variable a real promise: the compiler enforces that the body works uniformly.</p>
+      <p>This is what allows so much of the standard library to be written once and used with any element type. <code>List.length</code> works on a list of integers, a list of strings, or a list of records, with no overloading and no runtime dispatch.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>The signatures advertise this directly. <code>List.length</code> is <code>'a list -&gt; int</code>: it works on a list of any element type and returns an integer. <code>List.rev</code> is <code>'a list -&gt; 'a list</code>: the element type is preserved.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">stdlib.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="ty">List</span>.<span class="fn">length</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* 3; 'a is int here *)</span>
+
+<span class="ty">List</span>.<span class="fn">length</span> [<span class="str">"a"</span>; <span class="str">"b"</span>]
+<span class="cmt">(* 2; 'a is string here *)</span>
+
+<span class="ty">List</span>.<span class="fn">rev</span> [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* [3; 2; 1], type int list -> int list *)</span>
+
+<span class="kw">let</span> <span class="fn">swap</span> (a, b) = (b, a)
+<span class="cmt">(* swap : 'a * 'b -> 'b * 'a *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Polymorphism with higher-order functions</h2>
+      <p>Polymorphic types come into their own with higher-order functions. <code>List.map</code> has type <code>('a -&gt; 'b) list... </code> (more precisely, <code>('a -&gt; 'b) -&gt; 'a list -&gt; 'b list</code>). Two type variables make the relationship explicit: it takes a function from one element type to another and a list of the input type, and returns a list of the output type.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">map.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="cmt">(* List.map : ('a -> 'b) -> 'a list -> 'b list *)</span>
+
+<span class="ty">List</span>.<span class="fn">map</span> <span class="ty">String</span>.<span class="fn">length</span> [<span class="str">"hi"</span>; <span class="str">"world"</span>]
+<span class="cmt">(* [2; 5] with 'a = string, 'b = int *)</span>
+
+<span class="ty">List</span>.<span class="fn">map</span> (<span class="kw">fun</span> x -> x * x) [<span class="num">1</span>; <span class="num">2</span>; <span class="num">3</span>]
+<span class="cmt">(* [1; 4; 9] with 'a = int, 'b = int *)</span></pre>
+      </div>
+
+      <h2>Generalization and the value restriction</h2>
+      <p>OCaml only generalizes a binding to a polymorphic type when the right-hand side is a value: a function literal, a constant, or another value-shaped expression. Bindings whose right-hand side performs computation, especially with mutable cells, get a less general type to keep the type system sound.</p>
+      <p>You usually do not have to think about this: ordinary <code>let f x = ...</code> definitions are always values (they are functions) and become polymorphic without effort. The restriction shows up mainly with partial applications that involve <code>ref</code>.</p>
+
+      <div class="code-block inline">
+        <div class="code-top">
+          <span class="code-fname">generalize.ml</span>
+          <button class="copy-btn" onclick="copyCode(this)">copy</button>
+        </div>
+<pre><span class="cmt">(* Function definition: fully polymorphic *)</span>
+<span class="kw">let</span> <span class="fn">id</span> x = x
+<span class="cmt">(* id : 'a -> 'a *)</span>
+
+<span class="cmt">(* Value: polymorphic *)</span>
+<span class="kw">let</span> empty = []
+<span class="cmt">(* empty : 'a list *)</span>
+
+<span class="cmt">(* Computation involving a ref:
+   not generalized, type variable becomes weak *)</span>
+<span class="kw">let</span> store = <span class="kw">ref</span> []
+<span class="cmt">(* store : '_weak1 list ref *)</span></pre>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Good practice</div>
+        <p>Let polymorphism happen on its own. Write functions in their most natural form, and the compiler will give them the most general type they support. Reach for annotations only to narrow a type, never to widen one.</p>
+      </div>
+
+      <div class="page-footer">
+        <a href="/concepts/type-inference">← Type Inference</a>
+        <a href="/concepts/pattern-matching">Next: Pattern Matching →</a>
+      </div>
+    </div>

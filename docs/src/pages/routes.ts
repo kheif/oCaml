@@ -1,8 +1,12 @@
 import home from '../pages-content/home.html?raw';
 import cheatsheet from '../pages-content/cheatsheet.html?raw';
+import bindings from '../pages-content/concepts/bindings.html?raw';
 import currying from '../pages-content/concepts/currying.html?raw';
 import abstractions from '../pages-content/concepts/abstractions.html?raw';
+import typeInference from '../pages-content/concepts/type-inference.html?raw';
+import polymorphism from '../pages-content/concepts/polymorphism.html?raw';
 import patternMatching from '../pages-content/concepts/pattern-matching.html?raw';
+import lists from '../pages-content/concepts/lists.html?raw';
 import higherOrder from '../pages-content/concepts/higher-order.html?raw';
 import tailRecursion from '../pages-content/concepts/tail-recursion.html?raw';
 import iteration from '../pages-content/concepts/iteration.html?raw';
@@ -33,6 +37,13 @@ export const contentRoutes: ContentRoute[] = [
       'Quick reference for OCaml syntax: bindings, types, functions, pattern matching, lists, modules, and I/O.',
   },
   {
+    path: '/concepts/bindings',
+    html: bindings,
+    title: 'Bindings | oCamlCase',
+    description:
+      'Understand let bindings in OCaml: how names are linked to values, local let ... in scoping, shadowing as a substitute for assignment, and opt-in mutability with refs.',
+  },
+  {
     path: '/concepts/currying',
     html: currying,
     title: 'Currying | oCamlCase',
@@ -47,11 +58,32 @@ export const contentRoutes: ContentRoute[] = [
       'Learn how OCaml uses anonymous functions (abstractions) as first-class values, and how let bindings are just syntactic sugar for naming them.',
   },
   {
+    path: '/concepts/type-inference',
+    html: typeInference,
+    title: 'Type Inference | oCamlCase',
+    description:
+      'How OCaml infers the most general type for every binding using Hindley-Milner: how constraints propagate, when type variables appear, and when annotations help.',
+  },
+  {
+    path: '/concepts/polymorphism',
+    html: polymorphism,
+    title: 'Polymorphism | oCamlCase',
+    description:
+      'Parametric polymorphism in OCaml: type variables, generic functions like List.length and List.map, and the value restriction that keeps the type system sound.',
+  },
+  {
     path: '/concepts/pattern-matching',
     html: patternMatching,
     title: 'Pattern Matching | oCamlCase',
     description:
       'Learn pattern matching in OCaml: the match expression, variant types, exhaustiveness checking, guards, and nested patterns.',
+  },
+  {
+    path: '/concepts/lists',
+    html: lists,
+    title: 'Lists | oCamlCase',
+    description:
+      'Work with OCaml lists: cons-based construction, pattern matching on empty and non-empty lists, and the standard List functions including map, filter, and fold_left.',
   },
   {
     path: '/concepts/higher-order',
