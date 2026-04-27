@@ -3,6 +3,7 @@ import cheatsheet from '../pages-content/cheatsheet.html?raw';
 import bindings from '../pages-content/concepts/bindings.html?raw';
 import currying from '../pages-content/concepts/currying.html?raw';
 import abstractions from '../pages-content/concepts/abstractions.html?raw';
+import lexicalScope from '../pages-content/concepts/lexical-scope.html?raw';
 import typeInference from '../pages-content/concepts/type-inference.html?raw';
 import polymorphism from '../pages-content/concepts/polymorphism.html?raw';
 import patternMatching from '../pages-content/concepts/pattern-matching.html?raw';
@@ -56,6 +57,13 @@ export const contentRoutes: ContentRoute[] = [
     title: 'Abstractions | oCamlCase',
     description:
       'Learn how OCaml uses anonymous functions (abstractions) as first-class values, and how let bindings are just syntactic sugar for naming them.',
+  },
+  {
+    path: '/concepts/lexical-scope',
+    html: lexicalScope,
+    title: 'Lexical Scope | oCamlCase',
+    description:
+      'Reason about names in OCaml: defining vs. using occurrences, bound vs. free occurrences, lexical binding, and the sanitization conditions that make substitution safe.',
   },
   {
     path: '/concepts/type-inference',

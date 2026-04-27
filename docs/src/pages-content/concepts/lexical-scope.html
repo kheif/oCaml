@@ -1,0 +1,104 @@
+<div class="article">
+      <div class="page-header">
+        <div class="page-label">Concept 4 of 11</div>
+        <h1 class="page-title">Lexical Scope</h1>
+        <p class="page-intro">A precise vocabulary for talking about names in a program: which occurrences introduce a name, which use it, which are bound to a definition, and which are free. This is the foundation for safely substituting and transforming code.</p>
+      </div>
+
+      <h2>Defining vs. using occurrences</h2>
+      <p>Every appearance of a name in a program is one of two kinds. A <strong>defining occurrence</strong> is the spot that introduces the name. The parameter list of a <code>fun</code>, the left-hand side of a <code>let</code>, and the variables in a pattern are all defining occurrences. A <strong>using occurrence</strong> is any other appearance, where the program reads the value that some defining occurrence stands for.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>In <code>fun x -&gt; fun y -&gt; z x (y x)</code> the <code>x</code> after the first <code>fun</code> and the <code>y</code> after the second are defining occurrences. Every later <code>x</code> and <code>y</code> is a using occurrence that refers back to one of those parameters.</p>
+          <div class="callout callout-key">
+            <div class="callout-title">Key point</div>
+            <p>"Lexical" means the meaning of a name is fixed by where it is written, not by what happens at runtime. You can resolve every occurrence by reading the source.</p>
+          </div>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">occurrences.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="cmt">(* defining: x, y
+   using:    x, y, x  *)</span>
+<span class="kw">fun</span> x -&gt; <span class="kw">fun</span> y -&gt; z x (y x)
+
+<span class="cmt">(* In a let, the name on the left is defining;
+   uses on the right of `in` refer back to it. *)</span>
+<span class="kw">let</span> n = <span class="num">3</span> <span class="kw">in</span> n + n
+<span class="cmt">(* defining: n
+   using:    n, n  *)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Bound and free occurrences</h2>
+      <p>A defining occurrence is always considered <strong>bound</strong>. A using occurrence is <strong>bound</strong> when it can be matched with a defining occurrence that is in scope, and <strong>free</strong> when no such defining occurrence exists. The act of pairing each using occurrence with the defining occurrence that supplies its value is called the <strong>lexical binding</strong> of the phrase.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>In the same example, every <code>x</code> and <code>y</code> binds back to one of the <code>fun</code> parameters, so they are all bound. The <code>z</code> never gets defined inside the phrase, so it is a free occurrence. Free names depend on the surrounding context to give them meaning.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">bound-vs-free.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="cmt">(* bound: x, y, x, y, x
+   free:  z              *)</span>
+<span class="kw">fun</span> x -&gt; <span class="kw">fun</span> y -&gt; z x (y x)
+
+<span class="cmt">(* This phrase has no defining occurrence
+   at all, so a and b are both free.        *)</span>
+a + b</pre>
+          </div>
+        </div>
+      </div>
+
+      <h2>Sanitization</h2>
+      <p>A phrase is called <strong>sanitized</strong> when its names are clean enough to reason about without renaming. Two conditions must hold:</p>
+      <ol>
+        <li>No identifier has <strong>more than one</strong> defining occurrence.</li>
+        <li>If an identifier has a defining occurrence in the phrase, it does <strong>not</strong> also have a free occurrence in the phrase.</li>
+      </ol>
+      <p>The first rule rules out shadowing inside the phrase, so every using occurrence has an unambiguous origin. The second rule prevents an outer free <code>x</code> from being silently captured by an inner <code>fun x -&gt; ...</code> when code is substituted or moved around.</p>
+
+      <div class="two-col lean">
+        <div>
+          <p>The first example is sanitized. The names <code>x</code> and <code>y</code> are each introduced once, and <code>z</code> only ever appears free, never also as a defining occurrence here.</p>
+          <p>The second example fails both conditions. <code>x</code> is defined by the outer <code>let</code> and again by the inner <code>fun x -&gt;</code>. <code>y</code> is defined by two separate <code>fun y -&gt;</code> abstractions, and it also appears free as the final argument. Before reasoning about such a phrase the inner binders should be alpha-renamed so each name is unique.</p>
+        </div>
+        <div class="sticky">
+          <div class="code-block">
+            <div class="code-top">
+              <span class="code-fname">sanitization.ml</span>
+              <button class="copy-btn" onclick="copyCode(this)">copy</button>
+            </div>
+<pre><span class="cmt">(* Sanitized: x, y defined once; z only free. *)</span>
+<span class="kw">fun</span> x -&gt; <span class="kw">fun</span> y -&gt; z x (y x)
+
+<span class="cmt">(* Not sanitized:
+   - x is defined twice (outer let, inner fun)
+   - y is defined twice and also appears free *)</span>
+<span class="kw">let</span> x = (<span class="kw">fun</span> y -&gt; <span class="kw">fun</span> y -&gt; (<span class="kw">fun</span> x -&gt; z x y) x) y
+
+<span class="cmt">(* Alpha-rename to clean it up: *)</span>
+<span class="kw">let</span> x0 = (<span class="kw">fun</span> y1 -&gt; <span class="kw">fun</span> y2 -&gt; (<span class="kw">fun</span> x1 -&gt; z x1 y2) y1) y</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Why it matters</div>
+        <p>Sanitization is the precondition for almost every program transformation: substitution, beta reduction, inlining, or refactoring a name. When a phrase is not sanitized, renaming the inner binders first prevents accidental capture and preserves the original meaning.</p>
+      </div>
+
+      <div class="page-footer">
+        <a href="/concepts/abstractions">← Abstractions</a>
+        <a href="/concepts/type-inference">Next: Type Inference →</a>
+      </div>
+    </div>
