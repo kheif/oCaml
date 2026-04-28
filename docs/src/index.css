@@ -92,9 +92,20 @@ a:hover { color: var(--accent); }
 .topbar-nav a:hover { background: var(--bg); color: var(--text); }
 .topbar-nav a.active { background: var(--bg); color: var(--accent); font-weight: 500; }
 
+.topbar-github {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.1s;
+}
+.topbar-github:hover { color: var(--text); background: none; }
+
 .menu-btn {
   display: none;
-  margin-left: auto;
+  margin-left: 8px;
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
