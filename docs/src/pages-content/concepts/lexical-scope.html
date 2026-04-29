@@ -115,17 +115,17 @@ a + b</pre>
       </div>
 
       <h2>Sanitization</h2>
-      <p>A phrase is called <strong>sanitized</strong> when its names are clean enough to reason about without renaming. Two conditions must hold:</p>
-      <ol>
-        <li>No identifier has <strong>more than one</strong> defining occurrence.</li>
-        <li>If an identifier has a defining occurrence in the phrase, it does <strong>not</strong> also have a free occurrence in the phrase.</li>
+      <p>An expression is <strong>sanitized</strong> when its names are clean enough that you can rewrite or move it without changing what it means. Two conditions must hold:</p>
+      <ol class="san-rules">
+        <li>Every identifier is defined <strong>at most once</strong>.</li>
+        <li>An identifier defined inside the expression does <strong>not</strong> also occur free in it.</li>
       </ol>
-      <p>The first rule rules out shadowing inside the phrase, so every using occurrence has an unambiguous origin. The second rule prevents an outer free <code>x</code> from being silently captured by an inner <code>fun x -&gt; ...</code> when code is substituted or moved around.</p>
+      <p>The first condition rules out shadowing within the expression, so each use of a name has a single, unambiguous origin. The second prevents an outer free <code>x</code> from being captured by an inner <code>fun x -&gt; ...</code> when the expression is substituted or moved.</p>
 
       <div class="two-col lean">
         <div>
-          <p>The first example is sanitized. The names <code>x</code> and <code>y</code> are each introduced once, and <code>z</code> only ever appears free, never also as a defining occurrence here.</p>
-          <p>The second example fails both conditions. <code>x</code> is defined by the outer <code>let</code> and again by the inner <code>fun x -&gt;</code>. <code>y</code> is defined by two separate <code>fun y -&gt;</code> abstractions, and it also appears free as the final argument. Before reasoning about such a phrase the inner binders should be alpha-renamed so each name is unique.</p>
+          <p>The first example is sanitized. <code>x</code> and <code>y</code> are each defined once, and <code>z</code> only ever occurs free.</p>
+          <p>The second example violates both conditions. <code>x</code> is defined by the outer <code>let</code> and again by the inner <code>fun x -&gt;</code>. <code>y</code> is defined twice and also appears free at the end. The fix is to rename the inner binders so each name is unique. This is called <strong>alpha-renaming</strong>.</p>
         </div>
         <div class="sticky">
           <div class="code-block">
@@ -149,7 +149,7 @@ a + b</pre>
 
       <div class="callout callout-tip">
         <div class="callout-title">Why it matters</div>
-        <p>Sanitization is the precondition for almost every program transformation: substitution, beta reduction, inlining, or refactoring a name. When a phrase is not sanitized, renaming the inner binders first prevents accidental capture and preserves the original meaning.</p>
+        <p>Sanitization is what makes program transformations safe: substituting an argument, beta-reducing, inlining a function, or renaming a variable. If an expression isn't sanitized, alpha-rename the inner binders first. Otherwise an outer name can be accidentally captured by an inner one, and the program quietly changes meaning.</p>
       </div>
 
       <div class="page-footer">
@@ -158,6 +158,36 @@ a + b</pre>
       </div>
 
       <style>
+        .san-rules {
+          list-style: none;
+          counter-reset: san;
+          padding: 0;
+          margin: 14px 0 14px 4px;
+          display: grid;
+          gap: 6px;
+        }
+        .san-rules li {
+          counter-increment: san;
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .san-rules li::before {
+          content: counter(san);
+          flex: 0 0 auto;
+          font-family: var(--mono);
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--accent);
+          border: 1px solid var(--accent);
+          border-radius: 50%;
+          width: 18px;
+          height: 18px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 1;
+        }
         .scope-demo {
           margin: 24px 0 32px;
           border: 1px solid var(--border);
