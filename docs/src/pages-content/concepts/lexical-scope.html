@@ -62,7 +62,7 @@ a + b</pre>
       <h2>Lexical vs dynamic scope</h2>
       <p>Free names get their meaning from the surrounding context. But <em>which</em> surrounding context? Two possibilities exist. Under <strong>lexical scope</strong>, a free name resolves to the binding visible at the place where the function was <em>written</em>. Under <strong>dynamic scope</strong>, it resolves to the most recent binding alive on the call stack at the moment the function <em>runs</em>. OCaml, like nearly every modern language, uses lexical scope. Step through the example to see why the choice matters.</p>
 
-      <div class="scope-demo">
+      <div class="demo-box scope-demo">
         <input type="radio" name="scope-step" id="sc-1" checked>
         <input type="radio" name="scope-step" id="sc-2">
         <input type="radio" name="scope-step" id="sc-3">
@@ -188,14 +188,7 @@ a + b</pre>
           justify-content: center;
           line-height: 1;
         }
-        .scope-demo {
-          margin: 24px 0 32px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--bg-warm);
-          padding: 18px 20px 20px;
-        }
-        .scope-demo > input[type="radio"] { display: none; }
+        /* .demo-box provides outer container styles */
         .demo-controls {
           display: flex; gap: 8px; margin-bottom: 14px; align-items: center;
         }
@@ -312,8 +305,7 @@ a + b</pre>
           content: '100'; color: #8a3030;
         }
 
-        .demo-caption { margin-top: 14px; min-height: 60px; }
-        .cap { display: none; color: var(--text); font-size: 14px; line-height: 1.55; }
+        .demo-caption { min-height: 60px; } /* override global 48px */
         #sc-1:checked ~ .demo-caption .cap-1,
         #sc-2:checked ~ .demo-caption .cap-2,
         #sc-3:checked ~ .demo-caption .cap-3,

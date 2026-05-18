@@ -71,7 +71,7 @@
       <h2>Watch the stack grow</h2>
       <p>Step through the same depth of recursion for both functions side by side. The left column tracks <code>factorial 4</code>; each call leaves a pending multiplication on the stack. The right column tracks <code>countdown 4</code>; the single frame is reused on every call.</p>
 
-      <div class="stack-demo">
+      <div class="demo-box stack-demo">
         <input type="radio" name="stack-step" id="ss-1" checked>
         <input type="radio" name="stack-step" id="ss-2">
         <input type="radio" name="stack-step" id="ss-3">
@@ -166,7 +166,7 @@
         </div>
       </div>
 
-      <div class="acc-demo">
+      <div class="demo-box acc-demo">
         <input type="radio" name="acc-step" id="as-1" checked>
         <input type="radio" name="acc-step" id="as-2">
         <input type="radio" name="acc-step" id="as-3">
@@ -240,14 +240,7 @@
       </div>
 
       <style>
-        .stack-demo, .acc-demo {
-          margin: 24px 0 32px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--bg-warm);
-          padding: 18px 20px 20px;
-        }
-        .stack-demo > input[type="radio"], .acc-demo > input[type="radio"] { display: none; }
+        /* .demo-box provides outer container styles */
         .demo-controls {
           display: flex; gap: 8px; margin-bottom: 14px; align-items: center;
         }
@@ -280,8 +273,6 @@
           background: var(--accent); color: #fff; border-color: var(--accent);
         }
 
-        .demo-caption { margin-top: 14px; min-height: 48px; }
-        .cap { display: none; color: var(--text); font-size: 14px; line-height: 1.55; }
         #ss-1:checked ~ .demo-caption .cap-1,
         #ss-2:checked ~ .demo-caption .cap-2,
         #ss-3:checked ~ .demo-caption .cap-3,

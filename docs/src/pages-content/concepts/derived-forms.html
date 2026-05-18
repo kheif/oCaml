@@ -42,7 +42,7 @@
       <h2>Watch the desugaring</h2>
       <p>Click through to see <code>e<sub>1</sub> &amp;&amp; e<sub>2</sub></code> rewritten step by step into its core form.</p>
 
-      <div class="closure-demo">
+      <div class="demo-box closure-demo">
         <input type="radio" name="ds-step" id="ds-1" checked>
         <input type="radio" name="ds-step" id="ds-2">
         <input type="radio" name="ds-step" id="ds-3">
@@ -113,14 +113,7 @@
       </div>
 
       <style>
-        .closure-demo {
-          margin: 24px 0 32px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--bg-warm);
-          padding: 18px 20px 20px;
-        }
-        .closure-demo > input[type="radio"] { display: none; }
+        /* .demo-box provides outer container styles */
         .demo-controls {
           display: flex; gap: 8px; margin-bottom: 14px; align-items: center;
         }
@@ -155,8 +148,7 @@
         #ds-1:checked ~ .demo-stage .ds-l1,
         #ds-2:checked ~ .demo-stage .ds-l2,
         #ds-3:checked ~ .demo-stage .ds-l3 { opacity: 1; transform: translateY(0); position: static; }
-        .demo-caption { margin-top: 14px; min-height: 44px; }
-        .cap { display: none; color: var(--text); font-size: 14px; line-height: 1.55; }
+        .demo-caption { min-height: 44px; } /* override global 48px */
         #ds-1:checked ~ .demo-caption .cap-1,
         #ds-2:checked ~ .demo-caption .cap-2,
         #ds-3:checked ~ .demo-caption .cap-3 { display: block; }

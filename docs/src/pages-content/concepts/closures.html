@@ -66,7 +66,7 @@
       <h2>Watch a closure form</h2>
       <p>Step through this small program to see how each <code>let</code> grows the environment and how each function value carries its own snapshot of it.</p>
 
-      <div class="closure-demo">
+      <div class="demo-box closure-demo">
         <input type="radio" name="closure-step" id="cs-1" checked>
         <input type="radio" name="closure-step" id="cs-2">
         <input type="radio" name="closure-step" id="cs-3">
@@ -148,14 +148,7 @@
       </div>
 
       <style>
-        .closure-demo {
-          margin: 24px 0 32px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--bg-warm);
-          padding: 18px 20px 20px;
-        }
-        .closure-demo > input[type="radio"] { display: none; }
+        /* .demo-box provides outer container styles */
         .demo-controls {
           display: flex; gap: 8px; margin-bottom: 14px; align-items: center;
         }
@@ -224,8 +217,7 @@
         #cs-4:checked ~ .demo-stage .b-q {
           opacity: 1; max-height: 80px; padding: 4px 0;
         }
-        .demo-caption { margin-top: 14px; min-height: 44px; }
-        .cap { display: none; color: var(--text); font-size: 14px; line-height: 1.55; }
+        .demo-caption { min-height: 44px; } /* override global 48px */
         #cs-1:checked ~ .demo-caption .cap-1,
         #cs-2:checked ~ .demo-caption .cap-2,
         #cs-3:checked ~ .demo-caption .cap-3,

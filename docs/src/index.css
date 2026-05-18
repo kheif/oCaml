@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind removed – all styling is vanilla CSS via this file */
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -817,6 +815,48 @@ pre {
 .run-btn:disabled { opacity: 0.6; cursor: default; }
 
 .pg-error-line { background: rgba(248, 81, 73, 0.18) !important; }
+
+/* ---- Animation Framework (shared across all concept demo pages) ---- */
+.demo-box {
+  margin: 24px 0 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-warm);
+  padding: 18px 20px 20px;
+}
+.demo-box input[type="radio"] { display: none; }
+
+.demo-timeline {
+  display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.demo-timeline label {
+  padding: 6px 12px;
+  border: 1px solid var(--border-dk);
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--bg);
+  user-select: none;
+  transition: all .25s ease;
+}
+.demo-timeline label:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.demo-stage { display: grid; gap: 16px; margin-bottom: 16px; }
+
+.demo-caption { margin-top: 14px; min-height: 48px; }
+.cap {
+  display: none;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+/* -------------------------------------------------------------------- */
 
 @media (max-width: 860px) {
   .sidebar {

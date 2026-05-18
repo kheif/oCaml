@@ -139,7 +139,7 @@
       <p>The two folds also differ in how they parenthesize the computation. For <code>[1; 2; 3; 4]</code> with <code>(+)</code> and starting value <code>0</code>, <code>fold_left</code> evaluates as <code>(((0+1)+2)+3)+4</code>, while <code>fold_right</code> evaluates as <code>1+(2+(3+(4+0)))</code>. Addition is associative so both yield <code>10</code>, but the <em>shape</em> of the computation is different.</p>
       <p>In practice, prefer <code>fold_left</code>: it is stack-safe and works on lists of any size. Reach for <code>fold_right</code> when the operation is naturally right-associative; list construction with <code>::</code> is the canonical example, since <code>fold_right</code> preserves the original element order without reversing.</p>
 
-      <div class="fold-demo">
+      <div class="demo-box fold-demo">
         <input type="radio" name="fold-step" id="fs-1" checked>
         <input type="radio" name="fold-step" id="fs-2">
         <input type="radio" name="fold-step" id="fs-3">
@@ -236,14 +236,7 @@
       </div>
 
       <style>
-        .fold-demo {
-          margin: 24px 0 32px;
-          border: 1px solid var(--border);
-          border-radius: 8px;
-          background: var(--bg-warm);
-          padding: 18px 20px 20px;
-        }
-        .fold-demo > input[type="radio"] { display: none; }
+        /* .demo-box provides outer container styles */
         .demo-controls {
           display: flex; gap: 8px; margin-bottom: 14px; align-items: center;
         }
@@ -308,8 +301,7 @@
           margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--muted);
         }
 
-        .demo-caption { margin-top: 14px; min-height: 56px; }
-        .cap { display: none; color: var(--text); font-size: 14px; line-height: 1.55; }
+        .demo-caption { min-height: 56px; } /* override global 48px */
         #fs-1:checked ~ .demo-caption .cap-1,
         #fs-2:checked ~ .demo-caption .cap-2,
         #fs-3:checked ~ .demo-caption .cap-3,
